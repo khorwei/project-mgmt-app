@@ -116,6 +116,31 @@ const mutations = new GraphQLObjectType({
       },
     },
 
+    // Update Client
+    updateClient: {
+      type: ClientType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLNonNull(GraphQLString) },
+        email: { type: GraphQLNonNull(GraphQLString) },
+        phone: { type: GraphQLNonNull(GraphQLString) },
+      },
+
+      resolve(parent, args) {
+        const client = new Client({
+          name: args.name,
+          email: args.email,
+          phone: args.phone,
+        });
+
+        return Client.findByIdAndUpdate(
+          args.id,
+          { $set: { name: args.name, email: args.email, phone: args.phone } }, // if there is no customer. will directly create a new customer
+          { new: true }
+        );
+      },
+    },
+
     // Add Project
     addProject: {
       type: ProjectType,
